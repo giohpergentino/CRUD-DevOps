@@ -1,12 +1,29 @@
-FROM node:latest
+# Estágio 1: Construção
+FROM node:16 AS build
 
-WORKDIR /api
+# Definir o diretório de trabalho no contêiner
+WORKDIR /app
 
+# Copiar package.json e package-lock.json
+COPY package*.json ./
+
+# Instalar dependências
+RUN npm install
+
+# Copiar todo o código fonte para o contêiner
 COPY . .
 
-RUN rm -rf node_modules
-RUN npm i
+# Estágio 2: Execução
+FROM node:16
 
-CMD ["npm", "start"]
+# Definir o diretório de trabalho no contêiner
+WORKDIR /app
 
+# Copiar as dependências instaladas e o código fonte do estágio de build
+COPY --from=build /app /app
+
+# Expor a porta que a API usará
 EXPOSE 8800
+
+# Comando para iniciar a API
+CMD ["npm", "start"]
