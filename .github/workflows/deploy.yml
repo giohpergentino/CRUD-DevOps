@@ -33,12 +33,12 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-east-2 # Substitua pela sua região
+          aws-region: us-east-1 # Substitua pela sua região
 
-      - name: Deploy to S3
+      - name: Deploy to S3 (ou outra ação específica para seu deploy)
         run: |
-          aws s3 sync ./build s3://seu-bucket --delete
+          aws s3 sync ./build s3://your-bucket-name --delete
 
-      - name: Invalidate CloudFront cache
+      - name: Invalidate CloudFront cache (se necessário)
         run: |
-          aws cloudfront create-invalidation --distribution-id SEU_DISTRIBUTION_ID --paths "/*"
+          aws cloudfront create-invalidation --distribution-id YOUR_DISTRIBUTION_ID --paths "/*"
