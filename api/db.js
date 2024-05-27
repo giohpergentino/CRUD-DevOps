@@ -1,9 +1,9 @@
-import mysql from "mysql"
+import mysql from 'mysql';
 
 export const db = mysql.createConnection({
-    host: "172.17.0.1",
-    user: "root",
-    password: "admin123",
-    database: "crud",
-    port: 3307
-})
+    host: 'mysql',  // Nome do contêiner MySQL definido no comando docker run
+    user: 'giovanna',
+    password: 'admin',
+    database: 'crud_user',
+    port: 3306
+});
