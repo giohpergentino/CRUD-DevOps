@@ -1,0 +1,53 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: 
+      - master
+      - staging
+
+jobs:
+  build:
+    runs-on: [ubuntu-latest]
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+      - name: Build frontend docker image
+        run: docker build -t giohpergentino ./frontend
+      - name: Build api docker image
+        run: docker build -t giohpergentino ./api
+      - name: Login to docker hub
+        run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+      - name: Publish frontend image to docker hub
+        run: docker push giohpergentino:latest
+      - name: Publish api image to docker hub
+        run: docker push giohpergentino:latest
+
+  deploy:
+    needs: build
+    runs-on: self-hosted
+    steps:
+      - name: Pull frontend image from docker hub
+        run: docker pull giohpergentino:latest
+      - name: Pull api image from docker hub
+        run: docker pull giohpergentino:latest
+      - name: Delete old frontend container
+        run: docker rm -f frontend
+      - name: Delete old api container
+        run: docker rm -f api
+      - name: Delete old mysql container
+        run: docker rm -f mysql
+      - name: Run mysql container
+        run: |
+          docker run -d \
+            -e MYSQL_ROOT_PASSWORD=${{ secrets.MYSQL_ROOT_PASSWORD }} \
+            -e MYSQL_DATABASE=${{ secrets.MYSQL_DATABASE }} \
+            -e MYSQL_USER=${{ secrets.MYSQL_USER }} \
+            -e MYSQL_PASSWORD=${{ secrets.MYSQL_PASSWORD }} \
+            -p 3306:3306 \
+            --name mysql \
+            mysql:latest
+      - name: Run api container
+        run: docker run -d -p 8800:8800 --name api --link mysql giohpergentino:latest
+      - name: Run frontend container
+        run: docker run -d -p 3000:3000 --name frontend --link api giohpergentino:latest
