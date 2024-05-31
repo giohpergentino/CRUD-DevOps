@@ -56,6 +56,10 @@ jobs:
             docker rm -f api || true
             docker rm -f mysql || true
 
+            # Construir e executar contêiner do frontend
+            cd CRUD-DevOps/frontend
+            docker build -t frontend .
+            docker run -d --name frontend --network net-devops -p 3000:80 frontend
             
             # Construir e executar contêiner MySQL
             cd CRUD-DevOps/docker
@@ -66,10 +70,5 @@ jobs:
             cd CRUD-DevOps/api
             docker build -t api .
             docker run -d --name api --network net-devops -p 8800:8800 api
-
-            # Construir e executar contêiner do frontend
-            cd CRUD-DevOps/frontend
-            docker build -t frontend .
-            docker run -d --name frontend --network net-devops -p 3000:80 frontend
 
           EOF
