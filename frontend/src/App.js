@@ -39,7 +39,7 @@ function App() {
   return (
     <>
       <Container>
-        <Title>USUÁRIOS - Giovanna Pergentino</Title>
+        <Title>USUÁRIOS</Title>
         <Form onEdit={onEdit} setOnEdit={setOnEdit} getUsers={getUsers} />
         <Grid setOnEdit={setOnEdit} users={users} setUsers={setUsers} />
       </Container>
