@@ -22,9 +22,11 @@ jobs:
 
       - name: Update repository
         run: |
-                cd CRUD_DevOps/
-                git checkout master
-                git pull origin master
+          ssh -i ~/.ssh/id_rsa ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
+          # Atualiza o repositório
+          cd /home/ubuntu/CRUD-DevOps
+          git checkout master
+          git pull origin master
         
       - name: Install Docker
         run: |
