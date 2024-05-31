@@ -61,19 +61,17 @@ jobs:
             docker rm -f mysql || true
 
             # Construir e executar contêiner do frontend
-            cd CRUD-DevOps/frontend
+            cd /home/ubuntu/CRUD-DevOps/frontend
             docker build -t frontend .
             docker run -d --name frontend --network net-devops -p 3000:80 frontend
             
             # Construir e executar contêiner MySQL
-            cd ..
-            cd CRUD-DevOps/docker
+            cd /home/ubuntu/CRUD-DevOps/docker
             docker build -t mysql .
             docker run -d --name mysql --network net-devops -e MYSQL_ROOT_PASSWORD=admin -e MYSQL_DATABASE=crud_user -e MYSQL_USER=giovanna -e MYSQL_PASSWORD=admin mysql
             
             # Construir e executar contêiner da API
-            cd ..
-            cd CRUD-DevOps/api
+            cd /home/ubuntu/CRUD-DevOps/api
             docker build -t api .
             docker run -d --name api --network net-devops -p 8800:8800 api
 
