@@ -1,0 +1,29 @@
+# Estágio 1: Construção da aplicação
+FROM node:16 AS build
+
+# Definir o diretório de trabalho
+WORKDIR /frontend
+
+# Copiar package.json e package-lock.json
+COPY package*.json ./
+
+# Instalar dependências
+RUN npm install
+
+# Copiar todo o código fonte para o contêiner
+COPY . .
+
+# Construir a aplicação React
+RUN npm run build
+
+# Estágio 2: Configuração do servidor web para servir a aplicação
+FROM nginx:alpine
+
+# Copiar os arquivos construídos para o diretório de conteúdo estático do Nginx
+COPY --from=build /frontend/build /usr/share/nginx/html
+
+# Expor a porta que o Nginx usará
+EXPOSE 80
+
+# Comando para iniciar o Nginx
+CMD ["nginx", "-g", "daemon off;"]

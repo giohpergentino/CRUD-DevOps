@@ -1,0 +1,50 @@
+name: Deploy to EC2
+
+on:
+  push:
+    branches:
+      - master
+      - staging
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H ${{ secrets.EC2_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Deploy to EC2
+        run: |
+          ssh -i ~/.ssh/id_rsa ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
+            # Verifica se a rede net-devops existe, senão, cria
+            docker network inspect net-devops >/dev/null 2>&1 || docker network create net-devops
+
+            # Remove containers antigos
+            docker rm -f frontend || true
+            docker rm -f api || true
+            docker rm -f mysql || true
+
+            # Construir e executar contêiner do frontend
+            cd CRUD-DevOps/frontend
+            docker build -t frontend .
+            docker run -d --name frontend --network net-devops -p 3000:80 frontend
+            
+            # Construir e executar contêiner MySQL
+            cd CRUD-DevOps/docker
+            docker build -t mysql .
+            docker run -d --name mysql --network net-devops -e MYSQL_ROOT_PASSWORD=admin -e MYSQL_DATABASE=crud_user -e MYSQL_USER=giovanna -e MYSQL_PASSWORD=admin mysql
+
+            # Construir e executar contêiner da API
+            cd CRUD-DevOps/api
+            docker build -t api .
+            docker run -d --name api --network net-devops -p 8800:8800 api
+
+          EOF
