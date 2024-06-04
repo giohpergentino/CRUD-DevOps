@@ -41,7 +41,7 @@ function App() {
   return (
     <>
       <Container>
-        <Title>CADASTRO DE USUÁRIOS</Title>
+        <Title>CADASTRO DE USUÁRIOS - Giovanna Pergentino</Title>
         <Form onEdit={onEdit} setOnEdit={setOnEdit} getUsers={getUsers} />
         <Grid setOnEdit={setOnEdit} users={users} setUsers={setUsers} />
       </Container>
