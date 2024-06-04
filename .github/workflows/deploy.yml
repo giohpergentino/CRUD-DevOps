@@ -37,15 +37,15 @@ jobs:
 
       - name: Build and Push Docker Images
         run: |
-          cd CRUD-DEVOPS/frontend
+          cd giohprgentino/frontend
           docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/frontend:latest .
           docker push ${{ secrets.DOCKER_HUB_USERNAME }}/frontend:latest
 
-          cd CRUD-DEVOPS/docker
+          cd giohprgentino/mysql
           docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/mysql:latest .
           docker push ${{ secrets.DOCKER_HUB_USERNAME }}/mysql:latest
 
-          cd CRUD-DEVOPS/api
+          cd giohprgentino/api
           docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/api:latest .
           docker push ${{ secrets.DOCKER_HUB_USERNAME }}/api:latest
 
