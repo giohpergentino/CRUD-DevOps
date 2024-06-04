@@ -1,32 +1,22 @@
 name: Deploy to EC2
 
 on:
-  push:
-    branches:
-      - staging
+  workflow_run:
+    workflows: ["Build and Push Docker Images"]
+    types:
+      - completed
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
-
       - name: Set up SSH
         run: |
           mkdir -p ~/.ssh
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -H ${{ secrets.EC2_HOST }} >> ~/.ssh/known_hosts
-
-      - name: Update repository
-        run: |
-          ssh -i ~/.ssh/id_rsa ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
-            cd /home/ubuntu/CRUD-DevOps
-            git checkout staging
-            git pull origin staging
-          EOF
 
       - name: Install Docker
         run: |
@@ -42,22 +32,6 @@ jobs:
             sudo usermod -aG docker ubuntu
             newgrp docker
           EOF
-
-      - name: Build and Push Docker Images
-        run: |
-          docker login -u "${{ secrets.DOCKER_HUB_USERNAME }}" -p "${{ secrets.DOCKER_HUB_PASSWORD }}"
-
-          cd frontend
-          docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/frontend:latest .
-          docker push ${{ secrets.DOCKER_HUB_USERNAME }}/frontend:latest
-
-          cd ../docker
-          docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/mysql:latest .
-          docker push ${{ secrets.DOCKER_HUB_USERNAME }}/mysql:latest
-
-          cd ../api
-          docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/api:latest .
-          docker push ${{ secrets.DOCKER_HUB_USERNAME }}/api:latest
 
       - name: Pull and Run Docker Containers on EC2
         run: |
