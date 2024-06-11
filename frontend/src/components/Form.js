@@ -69,7 +69,7 @@ const Form = ({ getUsers, onEdit, setOnEdit }) => {
 
     if (onEdit) {
       await axios
-        .put("http://3.145.63.138:8800/" + onEdit.id, {
+        .put("http://18.217.91.141:8800/" + onEdit.id, {
           nome: user.nome.value,
           email: user.email.value,
           fone: user.fone.value,
@@ -79,7 +79,7 @@ const Form = ({ getUsers, onEdit, setOnEdit }) => {
         .catch(({ data }) => toast.error(data));
     } else {
       await axios
-        .post("http://3.145.63.138:8800", {
+        .post("http://18.217.91.141:8800", {
           nome: user.nome.value,
           email: user.email.value,
           fone: user.fone.value,
