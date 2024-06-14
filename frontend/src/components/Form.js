@@ -117,7 +117,7 @@ const Form = ({ getUsers, onEdit, setOnEdit }) => {
         <Input name="data_nascimento" type="date" />
       </InputArea>
 
-      <Button type="submit">SALVAR TESTE</Button>
+      <Button type="submit">SALVAR</Button>
     </FormContainer>
   );
 };
