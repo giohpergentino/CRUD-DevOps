@@ -75,3 +75,5 @@ Passo 5: Configurar o monitoramento
 Agora que o Zabbix está configurado e funcionando, você pode adicionar hosts e itens de monitoramento conforme necessário para monitorar sua aplicação.
 
 Com essa configuração, todos os containers estão na mesma rede Docker (net-devops), o que permite a comunicação fácil entre eles. Certifique-se de ajustar as configurações de conexão do Zabbix Server e da interface web para se conectarem ao PostgreSQL corretamente.
+
+https://busy-sunspot-00c.notion.site/Settings-for-EC2-db344aed5235413d9e0f71e6d457ba90
